@@ -3,6 +3,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import logger from "./utils/logger.js";
 import morgan from "morgan";
+import {swaggerUi,specs} from "./config/swagger.js"
 const morganFormat = ":method :url :status :response-time ms";
 const app = express()
 
@@ -11,6 +12,8 @@ app.use(
         origin: process.env.CORS_ORIGIN,
         credentials: true
 }))
+//swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 //advanced loggers
 app.use(
   morgan(morganFormat, {

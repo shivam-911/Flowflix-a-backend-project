@@ -4,7 +4,6 @@ import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { use, useId } from "react";
 
 const createTweet = asyncHandler(async (req, res) => {
   //TODO: create tweet
