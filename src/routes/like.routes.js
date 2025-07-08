@@ -103,6 +103,37 @@ export default router
  *       404:
  *         description: Comment not found
  */
+/**
+ * @swagger
+ * /api/v1/likes/toggle/t/{tweetId}:
+ *   post:
+ *     summary: Toggle like on a tweet
+ *     tags: [Likes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: tweetId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the tweet to like or unlike
+ *     responses:
+ *       200:
+ *         description: Successfully toggled like status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Tweet liked
+ *       401:
+ *         description: Unauthorized – JWT token missing or invalid
+ *       404:
+ *         description: Tweet not found
+ */
 
 /**
  * @swagger
