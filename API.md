@@ -1,190 +1,282 @@
-# FlowFlix API Documentation
+# 📘 Flowflix API Documentation
 
-## Base URL
+> Base URL: `http://localhost:PORT/api/v1/`
+
+---
+
+## 🔰 Authentication
+
+Some routes may require authentication via **Bearer Token**.
+
+**Header Format:**
+
 ```
-http://localhost:8080
-```
-
-## Authentication
-All protected routes require JWT token in header:
-```
-Authorization: Bearer <your_jwt_token>
-```
-
-## Auth Endpoints
-
-### Register User
-```http
-POST /register
-Content-Type: application/json
-
-{
-  "username": "john_doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "fullName": "John Doe"
-}
+Authorization: Bearer <JWT_TOKEN>
 ```
 
-### Login User
-```http
-POST /login
-Content-Type: application/json
+---
 
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
+## 🩺 Healthcheck
 
-**Response:**
-```json
-{
-  "token": "jwt_token_here",
-  "user": {
-    "id": "user_id",
-    "username": "john_doe",
-    "email": "john@example.com"
-  }
-}
-```
+### GET `/healthcheck`
 
-## Video Endpoints
+* **Description**: Test if the API is up and running.
+* **Auth**: ❌ Not required
+* **Response**: `200 OK`
 
-### Upload Video
-```http
-POST /videos/
-Authorization: Bearer <token>
-Content-Type: multipart/form-data
+---
 
-{
-  "title": "My Video",
-  "description": "Video description",
-  "videoFile": <video_file>,
-  "thumbnail": <thumbnail_file>
-}
-```
+## 👤 User Routes
 
-### Get Video Details
-```http
-GET /videos/:videoId
-```
+### POST `/users/register`
 
-### Like/Unlike Video
-```http
-POST /videos/:videoId/like
-Authorization: Bearer <token>
-```
+* **Description**: Register a new user with profile info and avatar.
+* **Auth**: ❌ Not required
+* **Body (form-data)**:
 
-### Add Comment
-```http
-POST /videos/:videoId/comment
-Authorization: Bearer <token>
-Content-Type: application/json
+  * fullname (text)
+  * email (text)
+  * username (text)
+  * password (text)
+  * avatar (file)
+  * coverImage (file)
 
-{
-  "content": "Great video!"
-}
-```
+### POST `/users/login`
 
-### Get Comments
-```http
-GET /videos/:videoId/comments
-```
-
-## Channel Endpoints
-
-### Get Channel Stats
-```http
-GET /channels/:channelId/stats
-```
-
-### Subscribe to Channel
-```http
-POST /channels/:channelId/subscribe
-Authorization: Bearer <token>
-```
-
-### Get Subscriptions
-```http
-GET /users/subscriptions
-Authorization: Bearer <token>
-```
-
-## Playlist Endpoints
-
-### Create Playlist
-```http
-POST /playlists/
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "My Playlist",
-  "description": "Playlist description",
-  "isPublic": true
-}
-```
-
-### Add Video to Playlist
-```http
-POST /playlists/:playlistId/videos
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "videoId": "video_id_here"
-}
-```
-
-### Get User Playlists
-```http
-GET /users/playlists
-Authorization: Bearer <token>
-```
-
-## User Endpoints
-
-### Get User Profile
-```http
-GET /users/profile
-Authorization: Bearer <token>
-```
-
-### Update User Profile
-```http
-PUT /users/profile
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "fullName": "Updated Name",
-  "bio": "Updated bio"
-}
-```
-
-### Get Watch History
-```http
-GET /users/watch-history
-Authorization: Bearer <token>
-```
-
-## Error Responses
+* **Description**: Login with credentials.
+* **Body (JSON)**:
 
 ```json
 {
-  "success": false,
-  "message": "Error message here",
-  "error": "Detailed error info"
+  "username": "user1",
+  "email": "user@example.com",
+  "password": "******"
 }
 ```
 
-## Status Codes
+### POST `/users/logout`
 
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `500` - Internal Server Error
+* **Description**: Logout current user
+
+### POST `/users/change-password`
+
+* **Body (JSON)**:
+
+```json
+{
+  "oldPassword": "123456",
+  "newPassword": "newpass"
+}
+```
+
+### GET `/users/current-user`
+
+* **Description**: Returns current logged-in user info
+
+### PATCH `/users/update-account`
+
+* **Body (JSON)**:
+
+```json
+{
+  "fullname": "Updated Name",
+  "email": "updated@example.com"
+}
+```
+
+### PATCH `/users/avatar`
+
+* **Body**: avatar (file)
+
+### PATCH `/users/cover-image`
+
+* **Body**: coverImage (file)
+
+### GET `/users/history`
+
+* **Description**: Get watch history of current user
+
+### GET `/users/c/:username`
+
+* **Description**: Public channel view by username
+
+### POST `/users/refresh-token`
+
+* **Description**: Refresh authentication access token
+
+---
+
+## 📺 Video Routes
+
+### GET `/videos/`
+
+* **Description**: Get all published videos
+
+### POST `/videos/`
+
+* **Body (form-data)**:
+
+  * title
+  * description
+  * videoFile (file)
+  * thumbnail (file)
+
+### PATCH `/videos/:id`
+
+* **Update Video** (e.g. thumbnail)
+
+### GET `/videos/:id`
+
+* **Get specific video by ID**
+
+### DELETE `/videos/:id`
+
+* **Delete a video**
+
+### PATCH `/videos/toggle/publish/:id`
+
+* **Toggle published state**
+
+---
+
+## 🎵 Playlist Routes
+
+### POST `/playlist/`
+
+* **Create Playlist**
+
+```json
+{
+  "name": "likedVideos",
+  "description": "my liked videos"
+}
+```
+
+### GET `/playlist/user/:userId`
+
+* **User playlists**
+
+### GET `/playlist/:playlistId`
+
+* **Get playlist by ID**
+
+### PATCH `/playlist/:playlistId`
+
+* **Update playlist**
+
+### DELETE `/playlist/:playlistId`
+
+* **Delete playlist**
+
+### PATCH `/playlist/add/:videoId/:playlistId`
+
+* **Add video to playlist**
+
+### PATCH `/playlist/remove/:videoId/:playlistId`
+
+* **Remove video from playlist**
+
+---
+
+## 🔔 Subscription Routes
+
+### GET `/subscriptions/u/:userId`
+
+* **Get channels subscribed to**
+
+### POST `/subscriptions/c/:channelId`
+
+* **Toggle subscription to a channel**
+
+### GET `/subscriptions/c/:channelId`
+
+* **Get all subscribers of a channel**
+
+---
+
+## 💬 Comment Routes
+
+### POST `/comments/:videoId`
+
+* **Add comment to a video**
+
+### GET `/comments/:videoId`
+
+* **Get comments for a video**
+
+### PATCH `/comments/c/:commentId`
+
+* **Update a comment**
+
+```json
+{
+  "content": "Updated comment"
+}
+```
+
+---
+
+## 🐦 Tweet Routes
+
+### POST `/tweets/`
+
+```json
+{
+  "content": "Tweet content here"
+}
+```
+
+### GET `/tweets/user/:userId`
+
+* **Get tweets by user**
+
+### PATCH `/tweets/:tweetId`
+
+```json
+{
+  "content": "Updated tweet content"
+}
+```
+
+### DELETE `/tweets/:tweetId`
+
+* **Delete a tweet**
+
+---
+
+## ❤️ Like Routes
+
+### POST `/likes/toggle/v/:videoId`
+
+* **Like/unlike video**
+
+### POST `/likes/toggle/c/:commentId`
+
+* **Like/unlike comment**
+
+### POST `/likes/toggle/t/:tweetId`
+
+* **Like/unlike tweet**
+
+### GET `/likes/videos`
+
+* **Get liked videos**
+
+---
+
+## 📊 Dashboard Route
+
+### GET `/dashboard/stats`
+
+* **Get stats for the logged-in user/channel**
+
+### GET `/dashboard/videos`
+
+* **Get all videos uploaded by the logged-in user's channel**
+
+---
+
+### 📝 Notes:
+
+* Replace `:id` / `:userId` / `:videoId` etc. with actual values.
+* All endpoints starting with `/users`, `/videos`, etc., expect the `Authorization` header unless stated otherwise.
