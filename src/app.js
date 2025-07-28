@@ -7,11 +7,26 @@ import {swaggerUi,specs} from "./config/swagger.js"
 const morganFormat = ":method :url :status :response-time ms";
 const app = express()
 
+const allowedOrigins = [
+  "https://flowflix-dc7h.onrender.com",
+  "http://127.0.0.1:5500",
+  "http://localhost:3000",
+  // add others as needed
+];
+
 app.use(
-    cors({
-        origin: process.env.CORS_ORIGIN,
-        credentials: true
-}))
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow non-browser clients or same-origin
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true, // if your app needs cookies/auth headers
+  })
+);
 //swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 //advanced loggers
