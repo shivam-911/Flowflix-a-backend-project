@@ -3,7 +3,7 @@
 FlowFlix is a powerful and scalable backend API inspired by YouTube. Built using **Node.js**, **Express**, and **MongoDB**, it provides all the essential backend features you'd expect from a modern video-sharing platform — including user authentication, video uploads, comments, likes, playlists, subscriptions, and viewing history.
 
 ---
-
+## LIVE LINK -[https://flowflix-dc7h.onrender.com/api-docs]
 ## 🚀 Features
 
 - 🔐 Access & Refresh Token Authentication using JWT
